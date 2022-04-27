@@ -182,8 +182,21 @@ select nv.ma_nhan_vien ,nv.ho_ten ,nv.ngay_sinh ,nv.so_cmnd ,nv.luong ,nv.so_die
 nhan_vien as nv join vi_tri as vt on nv.ma_vi_tri=vt.ma_vi_tri join trinh_do as td on nv.ma_trinh_do=td.ma_trinh_do join bo_phan as bp on nv.ma_bo_phan=bp.ma_bo_phan
 where (nv.ho_ten like 'H%'or nv.ho_ten like 'T%' or nv.ho_ten like 'K%') and char_length(nv.ho_ten)<=15;
 -- 3.	Hiển thị thông tin của tất cả khách hàng có độ tuổi từ 18 đến 50 tuổi và có địa chỉ ở “Đà Nẵng” hoặc “Quảng Trị”.--
-select kh.ho_ten ,kh.ngay_sinh ,kh.gioi_tinh ,kh.so_cmnd ,kh.so_dien_thoai ,kh.email ,kh.dia_chi ,lk.ten_loai_khach from khach_hang kh join loai_khach lk on kh.ma_loai_khach=lk.ma_loai_khach
+select kh.ma_khach_hang,kh.ho_ten ,kh.ngay_sinh ,kh.gioi_tinh ,kh.so_cmnd ,kh.so_dien_thoai ,kh.email ,kh.dia_chi ,lk.ten_loai_khach from khach_hang kh join loai_khach lk on kh.ma_loai_khach=lk.ma_loai_khach
 where (year(kh.ngay_sinh) between 1972 and 2004) and kh.dia_chi like '%Đà Nẵng' or kh.dia_chi like '%Quảng Trị';
+-- 4.Đếm xem tương ứng với mỗi khách hàng đã từng đặt phòng bao nhiêu lần. Kết quả hiển thị được sắp xếp tăng dần theo số lần đặt phòng của khách hàng. Chỉ đếm những khách hàng nào có Tên loại khách hàng là “Diamond”.
+select kh.ma_khach_hang,kh.ho_ten, count(kh.ma_khach_hang) as so_lan,lk.ten_loai_khach as thanh_vien from khach_hang kh join hop_dong hd on kh.ma_khach_hang=hd.ma_khach_hang join loai_khach lk on 
+kh.ma_loai_khach=lk.ma_loai_khach where lk.ten_loai_khach ='dinamond'  group by kh.ma_khach_hang order by so_lan;
+
+-- 5.	Hiển thị ma_khach_hang, ho_ten, ten_loai_khach, ma_hop_dong, ten_dich_vu, ngay_lam_hop_dong, ngay_ket_thuc, tong_tien (Với tổng tiền được tính theo công thức như sau: Chi Phí Thuê + Số Lượng * Giá, với Số Lượng  và Giá là từ bảng dich_vu_di_kem, hop_dong_chi_tiet) cho tất cả các khách hàng đã từng đặt phòng. (những khách hàng nào chưa từng đặt phòng cũng phải hiển thị ra).
+select kh.ma_khach_hang ,kh.ho_ten ,lk.ten_loai_khach ,hd.ma_hop_dong ,dv.ten_dich_vu , hd.ngay_lam_hop_dong , hd.ngay_ket_thuc , dv.chi_phi_thue+hdct.so_luong*dvdk.gia as tong_tien
+ from khach_hang kh left join loai_khach lk on kh.ma_loai_khach=lk.ma_loai_khach left join hop_dong hd on kh.ma_khach_hang=hd.ma_khach_hang left join dich_vu dv on hd.ma_dich_vu=dv.ma_dich_vu
+ left join hop_dong_chi_tiet hdct on hd.ma_hop_dong = hdct.ma_hop_dong left join dich_vu_di_kem dvdk on hdct.ma_dich_vu_di_kem= dvdk.ma_dich_vu_di_kem group by kh.ma_khach_hang;
+ -- 6. 
+-- 20. Hiển thị thông tin của tất cả các nhân viên và khách hàng có trong hệ thống
+select ma_nhan_vien as id, ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi from nhan_vien 
+union all
+select ma_khach_hang as id, ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi from khach_hang ;
 
 
 
