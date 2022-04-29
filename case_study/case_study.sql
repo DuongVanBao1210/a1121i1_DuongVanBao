@@ -207,6 +207,18 @@ select dich_vu.ma_dich_vu, dich_vu.ten_dich_vu,dich_vu.dien_tich,dich_vu.so_nguo
 join hop_dong on hop_dong.ma_dich_vu=dich_vu.ma_dich_vu
 where year(hop_dong.ngay_lam_hop_dong)=2020 and dich_vu.ma_dich_vu not in(
 select dich_vu.ma_dich_vu from dich_vu join hop_dong on dich_vu.ma_dich_vu=hop_dong.ma_dich_vu  where year(hop_dong.ngay_lam_hop_dong)=2021) group by dich_vu.ma_dich_vu;
+-- 8.	Hiển thị thông tin ho_ten khách hàng có trong hệ thống, với yêu cầu ho_ten không trùng nhau.--
+-- cach 1:
+select kh.ho_ten from khach_hang kh group by kh.ho_ten;
+-- cach 2:
+select kh.ho_ten from khach_hang kh  group by kh.ma_khach_hang having count(kh.ho_ten)=1;
+-- cach 3:
+select kh.ho_ten from khach_hang kh left join hop_dong hd on kh.ma_khach_hang= hd.ma_khach_hang group by kh.ho_ten;
+
+-- 9.	Thực hiện thống kê doanh thu theo tháng, nghĩa là tương ứng với mỗi tháng trong năm 2021 thì sẽ có bao nhiêu khách hàng thực hiện đặt phòng.--
+
+select month(hd.ngay_lam_hop_dong) as thang ,year(hd.ngay_lam_hop_dong) as nam , count(kh.ma_khach_hang) as so_luong from hop_dong hd join khach_hang kh on hd.ma_khach_hang=kh.ma_khach_hang
+group by thang order by nam, thang;
 
 -- 20. Hiển thị thông tin của tất cả các nhân viên và khách hàng có trong hệ thống
 select ma_nhan_vien as id, ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi from nhan_vien 
