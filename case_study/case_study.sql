@@ -159,22 +159,13 @@ insert into dich_vu_di_kem values
 
 insert into hop_dong_chi_tiet values 
 (1,5,4,2),
-(2,8,1,2),
-(3,15,6,4),
+(2,8,5,2),
+(3,15,6,2),
 (4,1,1,3),
 (5,11,2,3),
-(6,1,6,1),
+(6,1,3,1),
 (7,2,2,1),
-(8,2,2,12),
-(9,3,2,5),
-(10,4,6,6),
-(11,3,1,8),
-(12,9,4,10),
-(13,14,6,9),
-(14,2,1,11),
-(15,1,2,7),
-(16,15,6,13),
-(17,1,7,12);
+(8,2,2,12);
 
 -- 2.	Hiển thị thông tin của tất cả nhân viên có trong hệ thống có tên bắt đầu là một trong các ký tự “H”, “T” hoặc “K” và có tối đa 15 kí tự.--
 
@@ -270,6 +261,18 @@ join dich_vu_di_kem dvdk on hdct.ma_dich_vu_di_kem=dvdk.ma_dich_vu_di_kem group 
  join bo_phan bp on nv.ma_bo_phan = bp.ma_bo_phan
  join hop_dong hd on hd.ma_nhan_vien = nv.ma_nhan_vien where year(hd.ngay_lam_hop_dong) between 2020 and 2021
 group by hd.ma_nhan_vien having so_hop_dong_da_lap <=3 ;
+
+-- 16.	Xóa những Nhân viên chưa từng lập được hợp đồng nào từ năm 2019 đến năm 2021 .	
+SET SQL_SAFE_UPDATES = 0;
+delete from nhan_vien nv  where nv.ma_nhan_vien not in (select hd.ma_nhan_vien from hop_dong hd 
+where year(hd.ngay_lam_hop_dong) between 2019 and 2021);
+
+-- 17.	Cập nhật thông tin những khách hàng có ten_loai_khach từ Platinum lên Diamond, chỉ cập nhật những khách hàng đã từng đặt phòng 
+-- với Tổng Tiền thanh toán trong năm 2021 là lớn hơn 10.000.000 VNĐ.
+
+SET SQL_SAFE_UPDATES = 0;
+update  khach_hang kh set kh.ma_loai_khach=1 where kh.ma_khach_hang in (select hd.ma_khach_hang from hop_dong hd  join dich_vu dv on dv.ma_dich_vu=hd.ma_dich_vu join hop_dong_chi_tiet hdct on hdct.ma_hop_dong=hd.ma_hop_dong
+join dich_vu_di_kem dvdk on dvdk.ma_dich_vu_di_kem=hdct.ma_dich_vu_di_kem where dv.chi_phi_thue+hdct.so_luong*dvdk.gia >10000000 group by hd.ma_khach_hang );
 
 
 -- 20. Hiển thị thông tin của tất cả các nhân viên và khách hàng có trong hệ thống
