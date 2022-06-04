@@ -9,6 +9,7 @@
 <html>
 <head>
     <title>Title</title>
+
 </head>
 <body>
 <a href="/customers">Xem Danh Sách Khách Hàng</a>

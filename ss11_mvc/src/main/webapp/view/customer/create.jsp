@@ -27,7 +27,7 @@
         <table>
             <tr>
                 <td>ID: </td>
-                <td><input type="number" name="id" id="id" value=""></td>
+                <td><input type="number" name="id" id="id"  ></td>
             </tr>
             <tr>
                 <td>Name: </td>

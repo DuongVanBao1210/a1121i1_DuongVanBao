@@ -38,7 +38,7 @@ public class CustomerServlet extends HttpServlet {
 
     private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
-        //Customer customer = customerService.findById(id);
+        Customer customer = customerService.findById(id);
         customerService.remove(id);
 
         try {
