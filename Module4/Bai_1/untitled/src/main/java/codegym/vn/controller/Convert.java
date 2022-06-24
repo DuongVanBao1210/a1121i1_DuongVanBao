@@ -16,7 +16,7 @@ public class Convert {
     @PostMapping("/convert")
     public String result(@RequestParam(value = "money") int money, Model model) {
         model.addAttribute("result", money * 23000);
-        model.addAttribute("money", money );
+        model.addAttribute("money",money );
         return "convert";
     }
 }
